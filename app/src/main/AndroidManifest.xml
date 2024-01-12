@@ -25,7 +25,6 @@
         </activity>
         <service
             android:name=".MyTtsService"
-            android:label="@string/service_label"
             android:permission="android.permission.BIND_TEXT_TO_SPEECH_SERVICE"
             android:exported="true">
             <intent-filter>

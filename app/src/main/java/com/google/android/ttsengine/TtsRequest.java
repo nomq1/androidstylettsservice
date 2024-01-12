@@ -3,10 +3,10 @@ package com.google.android.ttsengine;
 public class TtsRequest {
     private String sessionId;
     private String text;
-    private Float alpha; // Assuming these are Floats, can be changed to Integer if needed
-    private Float beta;
+    private Double alpha; // Assuming these are Floats, can be changed to Integer if needed
+    private Double beta;
     private Integer diffusionSteps;
-    private Float embeddingScale;
+    private Double embeddingScale;
 
     public String getSessionId() {
         return sessionId;
@@ -24,19 +24,19 @@ public class TtsRequest {
         this.text = text;
     }
 
-    public Float getAlpha() {
+    public Double getAlpha() {
         return alpha;
     }
 
-    public void setAlpha(Float alpha) {
+    public void setAlpha(Double alpha) {
         this.alpha = alpha;
     }
 
-    public Float getBeta() {
+    public Double getBeta() {
         return beta;
     }
 
-    public void setBeta(Float beta) {
+    public void setBeta(Double beta) {
         this.beta = beta;
     }
 
@@ -48,22 +48,31 @@ public class TtsRequest {
         this.diffusionSteps = diffusionSteps;
     }
 
-    public Float getEmbeddingScale() {
+    public Double getEmbeddingScale() {
         return embeddingScale;
     }
 
-    public void setEmbeddingScale(Float embeddingScale) {
+    public void setEmbeddingScale(Double embeddingScale) {
         this.embeddingScale = embeddingScale;
     }
 
     // Constructor
-    public TtsRequest(String sessionId, String text, Float alpha, Float beta, Integer diffusionSteps, Float embeddingScale) {
+    public TtsRequest(String sessionId, String text, Double alpha, Double beta, Integer diffusionSteps, Double embeddingScale) {
         this.sessionId = sessionId;
         this.text = text;
         this.alpha = alpha;
         this.beta = beta;
         this.diffusionSteps = diffusionSteps;
         this.embeddingScale = embeddingScale;
+    }
+
+    public TtsRequest(String sessionId, String text) {
+        this.sessionId = sessionId;
+        this.text = text;
+        this.alpha = 0.2;
+        this.beta = 0.4;
+        this.diffusionSteps = 10;
+        this.embeddingScale = 1.5;
     }
 
     // Getters and Setters

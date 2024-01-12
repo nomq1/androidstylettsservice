@@ -7,6 +7,12 @@ import java.util.Locale;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.SynthesisRequest;
 import android.speech.tts.SynthesisCallback;
+import okhttp3.RequestBody;
+import okhttp3.MediaType;
+import okhttp3.*;
+import android.media.AudioFormat;
+import retrofit2.Call;
+import retrofit2.Response;
 
 public class MyTtsService extends TextToSpeechService {
 
@@ -37,35 +43,40 @@ public class MyTtsService extends TextToSpeechService {
     protected void onSynthesizeText(SynthesisRequest request, SynthesisCallback callback) {
         String textToSynthesize = request.getCharSequenceText().toString();
         // Make sure to replace this URL with your actual API's base URL
-        String baseUrl = BuildConfig.API_BASE_URL;
+        String baseUrl = "";
 
         try {
-            // Set up Retrofit
             Retrofit retrofit = new Retrofit.Builder()
                     .baseUrl(baseUrl)
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();
 
-            // Create an instance of your API service
             TtsApiService apiService = retrofit.create(TtsApiService.class);
 
-            // Prepare TTS request
-            TtsRequest ttsRequest = new TtsRequest(/* sessionId, text, and other parameters */);
+            // Create a session
+            // Modify this part based on what data your API expects for session creation
+            RequestBody sessionRequestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), "{}");
+            Call<SessionResponse> sessionCall = apiService.createSession(sessionRequestBody);
+            Response<SessionResponse> sessionResponse = sessionCall.execute();
 
-            // Make a synchronous API call to your TTS service
-            Call<ResponseBody> call = apiService.performTts(ttsRequest);
-            Response<ResponseBody> response = call.execute();
+            if (!sessionResponse.isSuccessful() || sessionResponse.body() == null) {
+                callback.error();
+                return;
+            }
 
-            if (response.isSuccessful() && response.body() != null) {
-                // Assuming the API returns the audio data directly
-                byte[] audioData = response.body().bytes();
+            String sessionId = String.valueOf(sessionResponse.body().getSessionId());
 
-                // Provide synthesized speech data to the callback
-                callback.start(request.getSampleRateInHz(), AudioFormat.CHANNEL_OUT_MONO, AudioFormat.ENCODING_PCM_16BIT);
+            // Step 2: Perform TTS with the session ID and text
+            TtsRequest ttsRequest = new TtsRequest(sessionId, textToSynthesize /*, other parameters */);
+            Call<ResponseBody> ttsCall = apiService.performTts(ttsRequest);
+            Response<ResponseBody> ttsResponse = ttsCall.execute();
+
+            if (ttsResponse.isSuccessful() && ttsResponse.body() != null) {
+                byte[] audioData = ttsResponse.body().bytes();
+                callback.start(22050,  AudioFormat.ENCODING_PCM_16BIT, 1 );
                 callback.audioAvailable(audioData, 0, audioData.length);
                 callback.done();
             } else {
-                // Handle the error
                 callback.error();
             }
         } catch (Exception e) {
@@ -74,4 +85,3 @@ public class MyTtsService extends TextToSpeechService {
         }
     }
     }
-}

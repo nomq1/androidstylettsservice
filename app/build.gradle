@@ -3,12 +3,12 @@ plugins {
 }
 
 android {
-    compileSdk 32
+    compileSdk 33
 
     defaultConfig {
         applicationId "com.google.android.ttsengine"
         minSdk 21
-        targetSdk 32
+        targetSdk 33
         versionCode 1
         versionName "1.0"
 
@@ -16,7 +16,10 @@ android {
 
         buildConfigField 'String', 'API_BASE_URL', '"https://your.api.base.url/"'
     }
-
+    buildFeatures {
+        compose = true
+        buildConfig = true
+    }
     buildTypes {
         release {
             minifyEnabled false
