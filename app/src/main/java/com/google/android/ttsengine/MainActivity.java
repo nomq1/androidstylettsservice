@@ -14,7 +14,9 @@ public class MainActivity extends AppCompatActivity {
 //        setContentView(R.layout.activity_main);
 
         startService(new Intent(this, MyTtsService.class));
-        finish();
+//        Intent serviceIntent = new Intent(this, MyTtsService.class);
+//        bindService(serviceIntent, myServiceConnection, Context.BIND_AUTO_CREATE);
+//        finish();
 //        setContentView(R.layout.activity_main);
     }
 }
